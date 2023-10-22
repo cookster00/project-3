@@ -105,22 +105,24 @@ def check():
         # Cool, they found a new word
         matches.append(text)
         flask.session["matches"] = matches
+        result = {"status": "success", "message": "You found a new word!"}
     elif text in matches:
-        flask.flash("You already found {}".format(text))
+        result = {"status": "error", "message": "You already found {}".format(text)}
     elif not matched:
-        flask.flash("{} isn't in the list of words".format(text))
+        result = {"status": "error", "message": "{} isn't in the list of words".format(text)}
     elif not in_jumble:
-        flask.flash(
-            '"{}" can\'t be made from the letters {}'.format(text, jumble))
+        result = {"status": "error", "message": '"{}" cant be made from the letters {}'.format(text, jumble)}
     else:
         app.logger.debug("This case shouldn't happen!")
         assert False  # Raises AssertionError
 
     # Choose page:  Solved enough, or keep going?
     if len(matches) >= flask.session["target_count"]:
-       return flask.redirect(flask.url_for("success"))
+       result["redirect"] = flask.url_for("success")
     else:
-       return flask.redirect(flask.url_for("keep_going"))
+       result["redirect"] = flask.url_for("keep_going")
+
+    return flask.jsonify(result=result)
 
 
 ###############
