@@ -97,7 +97,6 @@
 			    });
 
 	      $("#attempt").keyup(function(event) {
-			console.log("Keyup event triggered")
 			var txt = $("#attempt").val();
 		        var keycode = event.which;
 			var letter = String.fromCharCode(keycode);
@@ -113,12 +112,12 @@
 						var message = data.result.message;
 						var matches = data.result.matches;
 						var redirect = data.result.redirect;
-
+						
 						var matchesElement = document.getElementById("results");
-						matchesElement.textContent = matches.join("/n");
-						console.log("Found words:" matches);
-
-						$(".message").text(message);
+						if (Array.isArray(matches) && matches.length > 0) {			
+							matchesElement.textContent = matches.join("\n");
+							      }
+						$("message").text(message);
 						if (redirect == "/success"){
 							window.location.replace(redirect);
 						      }
