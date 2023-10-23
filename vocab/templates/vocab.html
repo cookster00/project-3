@@ -92,9 +92,10 @@
       </div>
       <!-- container -->
       <script>
-	      $("#entry").sumbit( function(event){
+	      $("#entry").submit( function(event){
 			event.preventDefault();
 			    });
+
 	      $("#attempt").keyup(function(event) {
 			console.log("Keyup event triggered")
 			var txt = $("#attempt").val();
@@ -103,21 +104,23 @@
 
 			if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) {return}
 
-			$.getJSON("/_check", {text: txt}, function(data) {
-			        if ("error" in data){
-					var errorMessage = data.error;
-					console.log("Error: " + errorMessage)
-				}else{
-					var message = data.result.message;
-					var matches = data.result.matches;
-					var redirect = data.result.redirect;
+			$.getJSON("/_check", {text: txt}, 
+				function(data) {
+			        	if ("error" in data){
+						var errorMessage = data.error;
+						console.log("Error: " + errorMessage)
+					}else{
+						var message = data.result.message;
+						var matches = data.result.matches;
+						var redirect = data.result.redirect;
 
-					var matchesElement = document.getElementById("results");
-					matchesElement.textContent = matches.join("/n");
+						var matchesElement = document.getElementById("results");
+						matchesElement.textContent = matches.join("/n");
+						console.log("Found words:" matches);
 
-					$(".message").text(message);
-					if (redirect == "/success"){
-						window.location.replace(redirect);
+						$(".message").text(message);
+						if (redirect == "/success"){
+							window.location.replace(redirect);
 						      }
 				}
 				      });
