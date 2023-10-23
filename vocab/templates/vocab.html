@@ -77,28 +77,52 @@
                   <label for="attempt">Word:</label>
                   <input id="attempt" name="attempt" type="text" width="15"
                      autocomplete="off"  autofocus />
-                  <input type="submit" name="try" />
                </form>
             </div>
          </div>
          <br />
-         {% if session.matches|length is not equalto 0  %}
+         
          <h2>You found </h2>
          <p id="results">
-            {% for match in session.matches %}
-            {{ match }}
-            {% endfor %}
+      
          </p>
-         {% endif %}
-         {% with messages = get_flashed_messages() %}
-         {% if messages %}
-         <!-- Mismatch, already found, etc. "flashed" from Python -->
-         {% for message in messages %}
+  
          <p class="message">{{ message }}</p>
-         {% endfor %}
-         {% endif %}
-         {% endwith %}
+         
       </div>
       <!-- container -->
+      <script>
+	      $("#entry").sumbit( function(event){
+			event.preventDefault();
+			    });
+	      $("#attempt").keyup(function(event) {
+			console.log("Keyup event triggered")
+			var txt = $("#attempt").val();
+		        var keycode = event.which;
+			var letter = String.fromCharCode(keycode);
+
+			if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) {return}
+
+			$.getJSON("/_check", {text: txt}, function(data) {
+			        if ("error" in data){
+					var errorMessage = data.error;
+					console.log("Error: " + errorMessage)
+				}else{
+					var message = data.result.message;
+					var matches = data.result.matches;
+					var redirect = data.result.redirect;
+
+					var matchesElement = document.getElementById("results");
+					matchesElement.textContent = matches.join("/n");
+
+					$(".message").text(message);
+					if (redirect == "/success"){
+						window.location.replace(redirect);
+						      }
+				}
+				      });
+			    
+			    });
+      </script>
    </body>
 </html>
