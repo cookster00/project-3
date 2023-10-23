@@ -108,6 +108,7 @@ def check():
         if matched and in_jumble and not (text in matches):
         # Cool, they found a new word
             matches.append(text)
+            flask.session["matches"] = matches
             result["matches"] = matches
         elif text in matches:
             result["message"] = "You already found {}".format(text)
@@ -126,7 +127,7 @@ def check():
             result["redirect"] = flask.url_for("keep_going")
 
         app.logger.debug("redirect is {}".format(result["redirect"]))
-        app.logger.debug("redirect is {}".format(result["redirect"]))
+        app.logger.debug("redirect is {}".format(result["matches"]))
         return flask.jsonify(result=result)
     
     except Exception as e:
